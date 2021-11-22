@@ -9,7 +9,8 @@ class ChooseTaleToRestore extends StatefulWidget {
 }
 
 class _ChooseTaleToRestoreState extends State<ChooseTaleToRestore> {
-  List<String> taleNamesList = [];
+  List <String> taleNamesList = [];
+  List <String> keys = [];
 
   @override
   void initState() {
@@ -18,6 +19,7 @@ class _ChooseTaleToRestoreState extends State<ChooseTaleToRestore> {
   }
 
   void readTaleNamesList() async {
+    keys = []; taleNamesList = [];
     Box<dynamic> taleBox = await Hive.openBox('tales');
     Map<dynamic, dynamic> mappa = taleBox.toMap();
 
@@ -25,12 +27,19 @@ class _ChooseTaleToRestoreState extends State<ChooseTaleToRestore> {
     print(mappa);
 
     mappa.forEach((key, value) {
-      List<dynamic> dcCodes = jsonDecode(key);
-      List<int> cCodes = [];
-      dcCodes.forEach((element) {
-        cCodes.add(element);
-      });
-      taleNamesList.add(new String.fromCharCodes(cCodes));
+      List<dynamic> dcCodes = [];
+      try {
+        dcCodes = jsonDecode(key);
+        List<int> cCodes = [];
+        dcCodes.forEach((element) {
+          cCodes.add(element);
+        });
+        taleNamesList.add(new String.fromCharCodes(cCodes));
+      } catch(e) {
+        print('got err on decode $e');
+        taleNamesList.add(key);
+      }
+      keys.add(key);
     });
     setState(() {});
   }
@@ -52,17 +61,34 @@ class _ChooseTaleToRestoreState extends State<ChooseTaleToRestore> {
     List<Widget> lt = [];
     for (int i=0; i<taleNamesList.length; i++) {
       lt.add(
-          RaisedButton(
-            color: i%2==0? Colors.white : Colors.grey[300],
-              onPressed: (){
-                Navigator.pop(context, taleNamesList[i]);
-              },
-              child:
-              Text(taleNamesList[i], textScaleFactor: 1.2, style: TextStyle(color: Colors.black),)
+          Row(
+            children: [
+              Expanded(
+                child: RaisedButton(
+                  color: i%2==0? Colors.white : Colors.grey[300],
+                    onPressed: (){
+                      Navigator.pop(context, taleNamesList[i]);
+                    },
+                    child:
+                    Text(taleNamesList[i], textScaleFactor: 1.2, style: TextStyle(color: Colors.black),)
+                ),
+              ),
+              IconButton(icon: Icon(Icons.delete_forever), onPressed: (){delTale(keys[i]);}),
+            ],
           )
       );
     }
     return lt;
+  }
+
+  delTale(String key) {
+    print('delTale $key');
+    //Box<dynamic> taleBox = await Hive.openBox('tales');
+    Hive.openBox('tales').then((taleBox){
+      taleBox.delete(key);
+      readTaleNamesList();
+      setState(() {});
+    });
   }
 
 }

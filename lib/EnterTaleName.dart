@@ -19,10 +19,10 @@ class _EnterTaleNameState extends State<EnterTaleName> {
           padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
+              SizedBox(height: 26,),
               Text('Придумай название сказки!', textScaleFactor: 1.4,),
               SizedBox(height: 10,),
               Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
                   children: [
                     Expanded(child:
                     TextField(
@@ -31,12 +31,13 @@ class _EnterTaleNameState extends State<EnterTaleName> {
                       controller: myController,
                     ),
                     ),
-                    FlatButton(
-                        color: Colors.blueAccent[100],
-                        child: Text('Ok'),
-                        onPressed: _setTaleName
-                    )
                   ]),
+              SizedBox(height: 16,),
+              FlatButton(
+                  color: Colors.blueAccent[100],
+                  child: Text('Ok'),
+                  onPressed: _setTaleName
+              )
             ],
           ),
         )

@@ -1,9 +1,10 @@
-import 'package:web_socket_channel/html.dart';
+//import 'package:web_socket_channel/html.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
   String myTaleName = '', myNickName = '';
   var myOptions;
   List<String> selectedOptions;
+  String baseTale = 'kurRyaba';
+
+  bool isWordSelected = false;
+  bool isStartMsg = true;
 
   int curL, curW;
   bool stopTale = false, playMode = false;
@@ -129,12 +134,12 @@ class _MyHomePageState extends State<MyHomePage> {
       print('got saved nickname $myNickName');
     });
 
-    myTale = getKRtale();
-    myOptions = getOptions2();
+    myTale = getTale(baseTale);
+    myOptions = getOptions(baseTale);
+    myTaleBGpic = getBGpicFileName(baseTale);
 
     prepareWordOptionsAndRandomizeAnimation();
 
-    myTaleBGpic = getBGpicName();
     selectedOptions = [];
     selectedOptions.add('Смотри какую сказку придумал твой умный телефон)\n'
         'А ты сможешь придумать лучше?\n'
@@ -154,11 +159,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   prepareWordOptionsAndRandomizeAnimation() async {
-    hiveVarBox = await Hive.openBox('krOptions');
+    hiveVarBox = await Hive.openBox('MyOptions');
+
     if (hiveVarBox.length == 0) {
-      hiveVarBox.put('krOpt', jsonEncode(myOptions));
+      hiveVarBox.put(baseTale, jsonEncode(myOptions));
     } else {
-      myOptions = jsonDecode(hiveVarBox.get('krOpt'));
+      String myOptEncoded = hiveVarBox.get(baseTale);
+      if (myOptEncoded == null || myOptEncoded.length == 0) {
+        hiveVarBox.put(baseTale, jsonEncode(myOptions));
+      } else {
+        myOptions = jsonDecode(myOptEncoded);
+      }
     }
 
     await delay(2000);
@@ -260,7 +271,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Row(
+          children: [
+            Expanded(child: Text(widget.title)),
+            IconButton(
+                icon: Icon(Icons.import_contacts, size: 30,),
+                onPressed: _changeBaseTale,
+            ),
+          ],
+        ),
       ),
       body: Container(
         decoration: new BoxDecoration(
@@ -333,9 +352,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       bottomNavigationBar: Container(
         color: Colors.brown[300],
-          height: 60,
+          height: 50,
           child: ButtonBar(
           alignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          buttonPadding: EdgeInsets.all(3),
           children: [
             FloatingActionButton(onPressed: _showAbout, tooltip: 'О программе', child: Text('?', textScaleFactor: 2,), heroTag: "btnAbout",),
             FloatingActionButton(onPressed: _shuffleWords, tooltip: 'Новая сказка', child: Icon(Icons.shuffle, size: 30,), heroTag: "btnShuffle"),
@@ -400,7 +421,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> taleWList() {
     List<Widget> twl = [];
     for (int i=0; i < myTale.length; i++) {
-      List<String> wordsL = myTale[i].split(' ');
+      List<String> wordsL = myTale[i].trim().split(' ');
       List<Widget> wordsWL = [];
       for (int j=0; j < wordsL.length; j++) {
         wordsWL.add(
@@ -483,6 +504,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _stopTaleReading(){
     stopTale = true;
+    flutterTts.stop();
   }
 
   _showAbout(){
@@ -569,9 +591,9 @@ class _MyHomePageState extends State<MyHomePage> {
     String sourceWord = splitWordAndPunctuation(lineWords[curW])[0];
     Navigator.push(context, MaterialPageRoute(builder: (context) => EditWordOptions(sourceWord, myOptions)),)
     .then((value) {
-      print('myOptions');
+      print('got myOptions');
       print(myOptions);
-      hiveVarBox.put('krOpt', jsonEncode(myOptions));
+      hiveVarBox.put(baseTale, jsonEncode(myOptions));
       selectedOptions = getConcreteOptions(curL, curW);
       setState((){});
     });
@@ -602,7 +624,73 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
   }
+
+  void _changeBaseTale() {
+    print('_changeBaseTale');
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Доступны сказки', textAlign: TextAlign.center,),
+            scrollable: true,
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  FlatButton(
+                    child: Text('Курочка ряба', textScaleFactor: 1.4, style: TextStyle(color: Colors.blue[900]),),
+                    onPressed: (){
+                      if (baseTale != 'kurRyaba') {
+                        baseTale = 'kurRyaba';
+                        onChangeBaseTale();
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Где обедал воробей', textScaleFactor: 1.4, style: TextStyle(color: Colors.blue[900])),
+                    onPressed: (){
+                      if (baseTale != 'vorobey') {
+                        baseTale = 'vorobey';
+                        onChangeBaseTale();
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Мишка', textScaleFactor: 1.4, style: TextStyle(color: Colors.blue[900])),
+                    onPressed: (){
+                      if (baseTale != 'mishka') {
+                        baseTale = 'mishka';
+                        onChangeBaseTale();
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Танечка', textScaleFactor: 1.4, style: TextStyle(color: Colors.blue[900])),
+                    onPressed: (){
+                      if (baseTale != 'tanya') {
+                        baseTale = 'tanya';
+                        onChangeBaseTale();
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+    );
+  }
+
+  onChangeBaseTale(){
+    myTale = getTale(baseTale);
+    myOptions = getOptions(baseTale);
+    myTaleBGpic = getBGpicFileName(baseTale);
+    prepareWordOptionsAndRandomizeAnimation();
+    selectedOptions = [];
+    setState(() {});
+  }
 }
-
-
 

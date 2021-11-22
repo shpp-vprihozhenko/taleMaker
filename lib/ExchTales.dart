@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:web_socket_channel/html.dart';
+//import 'package:web_socket_channel/html.dart';
 
 import 'showAlertPage.dart';
 import 'requestToWss.dart';
@@ -26,7 +26,7 @@ class _ExchTalesState extends State<ExchTales> {
   final _controller = TextEditingController();
   final _controller2 = TextEditingController();
   final _controller3 = TextEditingController();
-  bool wssChannelIsListened = false;
+  //bool wssChannelIsListened = false;
   bool sendMode=false, receiveMode=false;
 
   @override
@@ -51,7 +51,7 @@ class _ExchTalesState extends State<ExchTales> {
         ),
         body: Container(
           padding: EdgeInsets.all(10),
-          child: Column(
+          child: ListView(
             children: [
               SizedBox(height: 15,),
               Row(
@@ -182,7 +182,7 @@ class _ExchTalesState extends State<ExchTales> {
                   hoverColor: Colors.lightBlueAccent,
                   onPressed: (){
                     if (_controller.text == '' || _controller2.text == '') {
-                      showAlertPage(context, 'Укажи пожалуйста псевдоним и название сказки.');
+                      showAlertPage(context, 'Укажи пожалуйста свои псевдоним и название сказки.');
                       return;
                     }
                     if (taleName != _controller2.text) {
@@ -191,14 +191,31 @@ class _ExchTalesState extends State<ExchTales> {
                     if (nickName != _controller.text) {
                       processNewNickName(false);
                     }
-                    receiveTale();
+                    receiveTale(nickName);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Получить сказку друга'),
+                      Text('Получить сказку'),
                       SizedBox(width: 10),
                       Icon(Icons.email),
+                    ],
+                  )
+              ),
+              SizedBox(height: 20),
+              sendMode? SizedBox() : FlatButton(
+                  height: 50,
+                  color: Colors.lightBlueAccent[100],
+                  hoverColor: Colors.lightBlueAccent,
+                  onPressed: (){
+                    receiveTale('all');
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Все сказки в сети'),
+                      SizedBox(width: 10),
+                      Icon(Icons.local_library),
                     ],
                   )
               ),
@@ -280,6 +297,12 @@ class _ExchTalesState extends State<ExchTales> {
   }
 
   sendMyTaleToReceiver() async {
+    if (nickName == null) {
+      nickName = _controller.text;
+    }
+    if (nickName == null) {
+      showAlertPage(context, 'Представьтесь, пожалуйста.');
+    }
     print('sending to $receiverNickName from $nickName');
     String res = await reqWss('send/$receiverNickName/$nickName/$taleName/'+jsonEncode(myTale));
     if (res == 'ok') {
@@ -292,14 +315,14 @@ class _ExchTalesState extends State<ExchTales> {
     }
   }
 
-  receiveTale() async {
-    print('receiving tale for $nickName');
-    String res = await reqWss('receive/$nickName');
+  receiveTale(String name) async {
+    print('receiving tale for $name');
+    String res = await reqWss('receive/$name');
     try {
       var tales = jsonDecode(res);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => WorkWithForeignTales(tales)))
+      Navigator.push(context, MaterialPageRoute(builder: (context) => WorkWithForeignTales(tales, name)))
       .then((resultChoice){
-        print('selected tale '+resultChoice);//412052550
+        print('selected tale $resultChoice');
         if (resultChoice != null) {
           Navigator.pop(context, resultChoice);
         }
@@ -314,19 +337,18 @@ class _ExchTalesState extends State<ExchTales> {
 
 class WorkWithForeignTales extends StatefulWidget {
   final tales;
-  WorkWithForeignTales(this.tales);
+  final name;
+  WorkWithForeignTales(this.tales, this.name);
   
   @override
-  _WorkWithForeignTalesState createState() => _WorkWithForeignTalesState(tales);
+  _WorkWithForeignTalesState createState() => _WorkWithForeignTalesState();
 }
 
 class _WorkWithForeignTalesState extends State<WorkWithForeignTales> {
-  final tales;
-  _WorkWithForeignTalesState(this.tales);
 
   @override
   void initState() {
-    print('tales list $tales');
+    print('tales list ${widget.tales}');
     super.initState();
   }
 
@@ -337,18 +359,20 @@ class _WorkWithForeignTalesState extends State<WorkWithForeignTales> {
         title: Text('Сказки, которые ждут тебя:'),
       ),
       body: ListView.builder(
-          itemCount: tales.length,
+          itemCount: widget.tales.length,
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
               tileColor: index % 2 == 0? Colors.white : Colors.yellow[100] ,
               title: FlatButton(
                 onPressed: (){
                   print('select $index tale');
-                  Navigator.pop(context, jsonEncode(tales[index]));
+                  Navigator.pop(context, jsonEncode(widget.tales[index]));
                 },
-                child: Text(tales[index]['fromNick']+' - '+tales[index]['tailName'], textScaleFactor: 1.2, textAlign: TextAlign.center,)
+                child: Text(widget.tales[index]['fromNick']+' - '+widget.tales[index]['tailName'], textScaleFactor: 1.2, textAlign: TextAlign.center,)
               ),
-              trailing: Container(
+              trailing: widget.name == 'all'
+              ? SizedBox()
+              : Container(
                 width: 25, height: 25,
                 child: FloatingActionButton(
                   tooltip: 'Удалить.',
@@ -367,11 +391,11 @@ class _WorkWithForeignTalesState extends State<WorkWithForeignTales> {
   }
 
   delTaleOnServer(index) {
-    var jTaleToDel = jsonEncode(tales[index]);
+    var jTaleToDel = jsonEncode(widget.tales[index]);
     print('del $jTaleToDel');
     reqWss('del/$jTaleToDel');
     setState(() {
-      tales.removeAt(index);
+      widget.tales.removeAt(index);
     });
   }
 }

@@ -1,3 +1,43 @@
+List<String> getTale (String baseTaleName) {
+  if (baseTaleName == 'kurRyaba') {
+    return getKRtale();
+  } else if (baseTaleName == 'vorobey') {
+    return getVorTale();
+  } else if (baseTaleName == 'mishka') {
+    return getMishkaTale();
+  } else if (baseTaleName == 'tanya') {
+    return getTanyaTale();
+  }
+  return [];
+}
+
+List<List<String>> getOptions (String baseTaleName) {
+  if (baseTaleName == 'kurRyaba') {
+    return getKrOptions();
+  } else if (baseTaleName == 'vorobey') {
+    return getVorOptions();
+  } else if (baseTaleName == 'mishka') {
+    return getMishkaOptions();
+  } else if (baseTaleName == 'tanya') {
+    return getTanyaOptions();
+  }
+  return [];
+}
+
+String getBGpicFileName(String baseTaleName) {
+  if (baseTaleName == 'kurRyaba') {
+    return 'kurRyaba.jpg';
+  } else if (baseTaleName == 'vorobey') {
+    return 'vorBG.jpg';
+  } else if (baseTaleName == 'mishka') {
+    return 'mishka.jpg';
+  } else if (baseTaleName == 'tanya') {
+    return 'tanya.jpg';
+  }
+  return '';
+}
+
+
 List<String> getKRtale () {
   List <String> krTale = [];
 
@@ -19,14 +59,7 @@ List<String> getKRtale () {
   return krTale;
 }
 
-class Variant {
-  int str;
-  int wordNum;
-  String wordVar;
-  Variant(this.str, this.wordNum, this.wordVar);
-}
-
-List<List<String>> getOptions2 () {
+List<List<String>> getKrOptions () {
   return [
     ['Жили-были','Плыли-плыли','Били-били','Летели-летели','Прыгали-прыгали'],
     ['дед','отец','отец','дядя','сосед'],
@@ -55,247 +88,102 @@ List<List<String>> getOptions2 () {
   ];
 }
 
-/*
-List<Variant> getOptions () {
-  List<Variant> varL = [];
-  varL.add(new Variant(0, 0, 'Жили-были'));
-  varL.add(new Variant(0, 0, 'Плыли-плыли'));
-  varL.add(new Variant(0, 0, 'Били-били'));
-  varL.add(new Variant(0, 0, 'Летели-летели'));
-  varL.add(new Variant(0, 0, 'Прыгали-прыгали'));
+List<String> getVorTale () {
+  List <String> tale = [];
 
-  varL.add(new Variant(0, 1, 'дед'));
-  varL.add(new Variant(0, 1, 'сын'));
-  varL.add(new Variant(0, 1, 'отец'));
-  varL.add(new Variant(0, 1, 'дядя'));
-  varL.add(new Variant(0, 1, 'сосед'));
-
-  varL.add(new Variant(0, 3, 'баба'));
-  varL.add(new Variant(0, 3, 'мама'));
-  varL.add(new Variant(0, 3, 'тётя'));
-  varL.add(new Variant(0, 3, 'дочь'));
-  varL.add(new Variant(0, 3, 'соседка'));
-
-  varL.add(new Variant(1, 1, 'была'));
-  varL.add(new Variant(1, 1, 'жила'));
-  varL.add(new Variant(1, 1, 'пела'));
-  varL.add(new Variant(1, 1, 'спела'));
-  varL.add(new Variant(1, 1, 'вопела'));
-
-  varL.add(new Variant(1, 4, 'Курочка'));
-  varL.add(new Variant(1, 4, 'Дудочка'));
-  varL.add(new Variant(1, 4, 'Дурочка'));
-  varL.add(new Variant(1, 4, 'Душечка'));
-  varL.add(new Variant(1, 4, 'Кукушечка'));
-
-  varL.add(new Variant(1, 5, 'Ряба'));
-  varL.add(new Variant(1, 5, 'Рыжа'));
-  varL.add(new Variant(1, 5, 'Синя'));
-  varL.add(new Variant(1, 5, 'Зелёна'));
-  varL.add(new Variant(1, 5, 'Серо-буро-малиновая'));
-
-  varL.add(new Variant(2, 0, 'Снесла'));
-  varL.add(new Variant(2, 0, 'Принесла'));
-  varL.add(new Variant(2, 0, 'Унесла'));
-  varL.add(new Variant(2, 0, 'Притащила'));
-  varL.add(new Variant(2, 0, 'Стащила'));
-
-  varL.add(new Variant(2, 1, 'Курочка'));
-  varL.add(new Variant(2, 1, 'Дудочка'));
-  varL.add(new Variant(2, 1, 'Дурочка'));
-  varL.add(new Variant(2, 1, 'Душечка'));
-  varL.add(new Variant(2, 1, 'Кукушечка'));
-
-  varL.add(new Variant(2, 2, 'яичко'));
-  varL.add(new Variant(2, 2, 'яблочко'));
-  varL.add(new Variant(2, 2, 'кирпичик'));
-  varL.add(new Variant(2, 2, 'чайничек'));
-  varL.add(new Variant(2, 2, 'ложечку'));
-
-  varL.add(new Variant(3, 4, 'золотое'));
-  varL.add(new Variant(3, 4, 'серебрянное'));
-  varL.add(new Variant(3, 4, 'деревянное'));
-  varL.add(new Variant(3, 4, 'гнилое'));
-  varL.add(new Variant(3, 4, 'червивое'));
-
-  varL.add(new Variant(4, 0, 'дед'));
-  varL.add(new Variant(4, 0, 'сын'));
-  varL.add(new Variant(4, 0, 'отец'));
-  varL.add(new Variant(4, 0, 'дядя'));
-  varL.add(new Variant(4, 0, 'сосед'));
-
-  varL.add(new Variant(4, 1, 'бил'));
-  varL.add(new Variant(4, 1, 'пилил'));
-  varL.add(new Variant(4, 1, 'лизал'));
-  varL.add(new Variant(4, 1, 'чесал'));
-  varL.add(new Variant(4, 1, 'писал'));
-
-  varL.add(new Variant(4, 4, 'разбил'));
-  varL.add(new Variant(4, 4, 'распилил'));
-  varL.add(new Variant(4, 4, 'вылизал'));
-  varL.add(new Variant(4, 4, 'причесал'));
-  varL.add(new Variant(4, 4, 'подписал'));
-
-  varL.add(new Variant(5, 0, 'баба'));
-  varL.add(new Variant(5, 0, 'мама'));
-  varL.add(new Variant(5, 0, 'тётя'));
-  varL.add(new Variant(5, 0, 'дочь'));
-  varL.add(new Variant(5, 0, 'соседка'));
-
-  varL.add(new Variant(5, 1, 'била'));
-  varL.add(new Variant(5, 1, 'пилила'));
-  varL.add(new Variant(5, 1, 'лизала'));
-  varL.add(new Variant(5, 1, 'чесала'));
-  varL.add(new Variant(5, 1, 'писала'));
-
-  varL.add(new Variant(5, 4, 'разбила'));
-  varL.add(new Variant(5, 4, 'распилила'));
-  varL.add(new Variant(5, 4, 'вылизала'));
-  varL.add(new Variant(5, 4, 'причесала'));
-  varL.add(new Variant(5, 4, 'подписала'));
-
-  varL.add(new Variant(6, 1, 'мышка'));
-  varL.add(new Variant(6, 1, 'кошка'));
-  varL.add(new Variant(6, 1, 'слониниха'));
-  varL.add(new Variant(6, 1, 'блошка'));
-  varL.add(new Variant(6, 1, 'щука'));
-
-  varL.add(new Variant(6, 2, 'бежала'));
-  varL.add(new Variant(6, 2, 'летела'));
-  varL.add(new Variant(6, 2, 'свистела'));
-  varL.add(new Variant(6, 2, 'хрипела'));
-  varL.add(new Variant(6, 2, 'плыла'));
-
-  varL.add(new Variant(7, 0, 'хвостиком'));
-  varL.add(new Variant(7, 0, 'лапкой'));
-  varL.add(new Variant(7, 0, 'сумочкой'));
-  varL.add(new Variant(7, 0, 'кирпичиком'));
-  varL.add(new Variant(7, 0, 'молоточком'));
-
-  varL.add(new Variant(7, 1, 'махнула'));
-  varL.add(new Variant(7, 1, 'погладила'));
-  varL.add(new Variant(7, 1, 'стукнула'));
-  varL.add(new Variant(7, 1, 'приголубила'));
-  varL.add(new Variant(7, 1, 'проехалась'));
-
-  varL.add(new Variant(8, 0, 'яичко'));
-  varL.add(new Variant(8, 0, 'яблочко'));
-  varL.add(new Variant(8, 0, 'кирпичик'));
-  varL.add(new Variant(8, 0, 'чайничек'));
-  varL.add(new Variant(8, 0, 'ложечку'));
-
-  varL.add(new Variant(8, 1, 'упало'));
-  varL.add(new Variant(8, 1, 'взлетело'));
-  varL.add(new Variant(8, 1, 'зависло'));
-  varL.add(new Variant(8, 1, 'помылось'));
-  varL.add(new Variant(8, 1, 'покрасилось'));
-
-  varL.add(new Variant(8, 3, 'разбилось'));
-  varL.add(new Variant(8, 3, 'склеилось'));
-  varL.add(new Variant(8, 3, 'слиплось'));
-  varL.add(new Variant(8, 3, 'испачкалось'));
-  varL.add(new Variant(8, 3, 'покатилось'));
-
-  varL.add(new Variant(9, 0, 'Плачет'));
-  varL.add(new Variant(9, 0, 'Смеётся'));
-  varL.add(new Variant(9, 0, 'Хохочет'));
-  varL.add(new Variant(9, 0, 'Радуется'));
-  varL.add(new Variant(9, 0, 'Грустит'));
-
-  varL.add(new Variant(9, 1, 'дед'));
-  varL.add(new Variant(9, 1, 'сын'));
-  varL.add(new Variant(9, 1, 'отец'));
-  varL.add(new Variant(9, 1, 'дядя'));
-  varL.add(new Variant(9, 1, 'сосед'));
-
-  varL.add(new Variant(9, 2, 'Плачет'));
-  varL.add(new Variant(9, 2, 'Смеётся'));
-  varL.add(new Variant(9, 2, 'Хохочет'));
-  varL.add(new Variant(9, 2, 'Радуется'));
-  varL.add(new Variant(9, 2, 'Грустит'));
-
-  varL.add(new Variant(9, 3, 'баба'));
-  varL.add(new Variant(9, 3, 'мама'));
-  varL.add(new Variant(9, 3, 'тётя'));
-  varL.add(new Variant(9, 3, 'дочь'));
-  varL.add(new Variant(9, 3, 'соседка'));
-
-  varL.add(new Variant(10, 1, 'говорит'));
-  varL.add(new Variant(10, 1, 'поёт'));
-  varL.add(new Variant(10, 1, 'свистит'));
-  varL.add(new Variant(10, 1, 'кричит'));
-  varL.add(new Variant(10, 1, 'ворчит'));
-
-  varL.add(new Variant(10, 3, 'Курочка'));
-  varL.add(new Variant(10, 3, 'Дудочка'));
-  varL.add(new Variant(10, 3, 'Дурочка'));
-  varL.add(new Variant(10, 3, 'Душечка'));
-  varL.add(new Variant(10, 3, 'Кукушечка'));
-
-  varL.add(new Variant(10, 4, 'Ряба'));
-  varL.add(new Variant(10, 4, 'Рыжа'));
-  varL.add(new Variant(10, 4, 'Синя'));
-  varL.add(new Variant(10, 4, 'Зелёна'));
-  varL.add(new Variant(10, 4, 'Серо-буро-малиновая'));
-
-  varL.add(new Variant(11, 2, 'плачь'));
-  varL.add(new Variant(11, 2, 'смейся'));
-  varL.add(new Variant(11, 2, 'хохочи'));
-  varL.add(new Variant(11, 2, 'радуйся'));
-  varL.add(new Variant(11, 2, 'грусти'));
-
-  varL.add(new Variant(11, 3, 'дед'));
-  varL.add(new Variant(11, 3, 'сын'));
-  varL.add(new Variant(11, 3, 'отец'));
-  varL.add(new Variant(11, 3, 'дядя'));
-  varL.add(new Variant(11, 3, 'сосед'));
-
-  varL.add(new Variant(11, 5, 'плачь'));
-  varL.add(new Variant(11, 5, 'смейся'));
-  varL.add(new Variant(11, 5, 'хохочи'));
-  varL.add(new Variant(11, 5, 'радуйся'));
-  varL.add(new Variant(11, 5, 'грусти'));
-
-  varL.add(new Variant(11, 6, 'баба'));
-  varL.add(new Variant(11, 6, 'мама'));
-  varL.add(new Variant(11, 6, 'тётя'));
-  varL.add(new Variant(11, 6, 'дочь'));
-  varL.add(new Variant(11, 6, 'соседка'));
-
-  varL.add(new Variant(12, 0, 'Снесу'));
-  varL.add(new Variant(12, 0, 'Принесу'));
-  varL.add(new Variant(12, 0, 'Унесу'));
-  varL.add(new Variant(12, 0, 'Притащу'));
-  varL.add(new Variant(12, 0, 'Стащу'));
-
-  varL.add(new Variant(12, 3, 'новое'));
-  varL.add(new Variant(12, 3, 'старое'));
-  varL.add(new Variant(12, 3, 'грязное'));
-  varL.add(new Variant(12, 3, 'вонючее'));
-  varL.add(new Variant(12, 3, 'белое'));
-
-  varL.add(new Variant(12, 4, 'яичко'));
-  varL.add(new Variant(12, 4, 'яблочко'));
-  varL.add(new Variant(12, 4, 'кирпичик'));
-  varL.add(new Variant(12, 4, 'чайничек'));
-  varL.add(new Variant(12, 4, 'ложечку'));
-
-  varL.add(new Variant(13, 1, 'золотое'));
-  varL.add(new Variant(13, 1, 'серебрянное'));
-  varL.add(new Variant(13, 1, 'деревянное'));
-  varL.add(new Variant(13, 1, 'гнилое'));
-  varL.add(new Variant(13, 1, 'червивое'));
-
-  varL.add(new Variant(13, 3, 'простое'));
-  varL.add(new Variant(13, 3, 'серебрянное'));
-  varL.add(new Variant(13, 3, 'деревянное'));
-  varL.add(new Variant(13, 3, 'гнилое'));
-  varL.add(new Variant(13, 3, 'червивое'));
-
-  return varL;
+  String s='Где обедал, воробей?'
+      '\nВ зоопарке у зверей.'
+      '\nПообедал я сперва'
+      '\nЗа решеткою у льва.'
+      '\nПодкрепился у лисицы.'
+      '\nУ моржа попил водицы.'
+      '\nЕл морковку у слона.'
+      '\nС журавлем поел пшена.'
+      '\nПогостил у носорога,'
+      '\nОтрубей поел немного.'
+      '\nПобывал я на пиру'
+      '\nУ хвостатых кенгуру.'
+      '\nБыл на праздничном обеде'
+      '\nУ мохнатого медведя.'
+      '\nА зубастый крокодил'
+      '\nЧуть меня не проглотил.';
+  tale = s.split('\n');
+  return tale;
 }
-*/
 
-String getBGpicName() {
- return 'kurRyaba.jpg';
+List<List<String>> getVorOptions () {
+  return [
+    ['Где','Когда','Зачем','Почему','За что'],
+    ['обедал','завтракал','ужинал','выпил','намусорил'],
+    ['воробей','бегемот','кот','крокодил','сосед'],
+    ['зоопарке','столовой','ресторане','скафандре','мусорке'],
+    ['зверей','соседей','бомжей','родителей','гостей'],
+    ['Пообедал','позавтракал','поужинал','подвыпил','понамусорил','поел','Погостил','Побывал'],
+    ['решеткою','столом','дверью','машиной','партой'],
+    ['льва','бурундука','жука','богомола','соседа','носорога','медведя'],
+    ['Подкрепился','напился','расслабился','подрался','поквитался'],
+    ['лисицы','волка','зайца','бурундука','страуса','слона'],
+    ['моржа','бомжа','пингвина','акулы','папуаса'],
+    ['попил','полил','подлил','забрал','укусил'],
+    ['водицы','ягодицы','яишницы','пшеницы','спицы'],
+    ['Ел','Съел','Забрал','Украл','Отобрал','Был'],
+    ['морковку','яблочко','грушку','песочек','линейку','пшена','Отрубей'],
+    ['журавлем','соловьём','грузчиком','товарищем','скунсом'],
+    ['немного','много','дофига','пяток','чуток'],
+    ['пиру','двору','улице','мусорке','потолке'],
+    ['хвостатых','мохнатых','диких','жадных','хитрых'],
+    ['кенгуру','соседей','друзей','волков','жуков'],
+    ['праздничном','весёлом','глупом','смешном','грустном'],
+    ['обеде','завтраке','ужине','полднике','чаепитии'],
+    ['мохнатого','хвостатого','дикого','жадного','злого'],
+    ['зубастый','клыкастый','толстый','шустрый','весёлый'],
+    ['проглотил','побил','победил','выплюнул','рассмешил'],
+  ];
+}
+
+List<String> getMishkaTale () {
+  String s='Уронили мишку на пол,'
+      '\nОторвали мишке лапу.'
+      '\nВсе равно его не брошу -'
+      '\nПотому что он хороший.';
+  return s.split('\n');
+}
+
+List<List<String>> getMishkaOptions () {
+  return [
+    ['Уронили','Бросили','Швырнули','Пнули','Положили'],
+    ['мишку','Егорку','зайку','белочку','бегемота'],
+    ['пол','стол','гвоздик','асфальт','мартышку'],
+    ['Оторвали','Отпилили','Отгрызли','Приклеили','Прибили'],
+    ['мишке','Егорке','зайке','белочке','бегемотику'],
+    ['хороший','глупый','мягкий','весёлый','смешной'],
+    ['лапу','голову','ухо','нос','хвост'],
+    ['брошу','стукну','швырну','пну','положу'],
+  ];
+}
+
+List<String> getTanyaTale () {
+  String s='Наша Таня громко плачет:'
+      '\nУронила в речку мячик.'
+      '\n— Тише, Танечка, не плачь:'
+      '\nНе утонет в речке мяч.';
+  return s.split('\n');
+}
+
+List<List<String>> getTanyaOptions () {
+  return [
+    ['Наша','Ваша','Общая','Своя','Моя'],
+    ['Таня','Ира','Оля','Ева','Настя'],
+    ['громко','тихо','как сирена'],
+    ['плачет','ревёт','воет','завывает','шипит'],
+    ['Уронила','Бросила','Швырнула','Запустила','Спустила'],
+    ['речку','озеро','море','океан','канализацию'],
+    ['речке','озере','море','океане','канализации'],
+    ['мячик','бантик','кофту','лопатку','тапок'],
+    ['мяч','бант','кофта','лопатка','тапок'],
+    ['Тише','Громче','Как сирена'],
+    ['Танечка','Иришка','Олечка','Настюшка','Евочка'],
+    ['плачь','реви','вой','завывай','шипи'],
+    ['утонет','всплывёт','уплывёт','приплывёт'],
+  ];
 }
